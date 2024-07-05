@@ -8,6 +8,8 @@
   <style>
     body {
       font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -17,68 +19,14 @@
     }
     #container {
       background: #fff;
-      padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 400px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+      height: 80%;
+      display: flex;
+      flex-direction: column;
       position: relative;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    #apiForm {
-      display: flex;
-      flex-direction: column;
-    }
-    #apiForm input {
-      margin-bottom: 10px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    #chatContainer {
-      display: none;
-      flex-direction: column;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-    #chatBox {
-      display: flex;
-      flex-direction: column;
-    }
-    .message {
-      margin: 5px 0;
-      padding: 10px;
-      border-radius: 5px;
-    }
-    .userMessage {
-      background-color: #d1e7dd;
-      align-self: flex-end;
-    }
-    .assistantMessage {
-      background-color: #f8d7da;
-      align-self: flex-start;
-    }
-    #messageInput {
-      display: flex;
-      margin-top: 10px;
-    }
-    #messageInput input {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    #messageInput button {
-      padding: 10px;
-      border: none;
-      background-color: #007bff;
-      color: white;
-      border-radius: 5px;
-      margin-left: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    #messageInput button:hover {
-      background-color: #0056b3;
     }
     #topRightButtons {
       position: absolute;
@@ -105,6 +53,71 @@
     }
     .material-icons {
       font-size: 24px;
+    }
+    #apiForm, #chatContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+    }
+    #apiForm input, #messageInput input {
+      width: 80%;
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #apiForm button, #messageInput button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    #apiForm button:hover, #messageInput button:hover {
+      background-color: #0056b3;
+    }
+    #chatContainer {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    #chatBox {
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+    .message {
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 5px;
+      max-width: 75%;
+    }
+    .userMessage {
+      background-color: #d1e7dd;
+      align-self: flex-end;
+    }
+    .assistantMessage {
+      background-color: #f8d7da;
+      align-self: flex-start;
+    }
+    #messageInput {
+      display: flex;
+      width: 100%;
+      padding: 10px;
+      background-color: #f4f4f9;
+    }
+    #messageInput input {
+      flex: 1;
     }
     body.dark-mode {
       background-color: #2c2c2c;
@@ -176,6 +189,10 @@
             })
           });
 
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
           const data = await response.json();
           const assistantMessage = data.choices[0].message.content;
 
@@ -185,8 +202,8 @@
           document.getElementById('chatBox').appendChild(assistantMessageBox);
 
         } catch (error) {
-          alert('Failed to fetch response from the API');
-          console.error(error);
+          alert(`Failed to fetch response from the API: ${error.message}`);
+          console.error('Error details:', error);
         }
       } else {
         alert('Please enter both API URL and API Key');
@@ -221,6 +238,10 @@
           })
         });
 
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
         const assistantMessage = data.choices[0].message.content;
 
@@ -231,8 +252,8 @@
 
         document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
       } catch (error) {
-        alert('Failed to fetch response from the API');
-        console.error(error);
+        alert(`Failed to fetch response from the API: ${error.message}`);
+        console.error('Error details:', error);
       }
     }
 
